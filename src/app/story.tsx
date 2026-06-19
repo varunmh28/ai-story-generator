@@ -1,9 +1,33 @@
 import Entypo from '@expo/vector-icons/Entypo';
-import { router } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+type StoryLine ={text: string , prompt: string};
 
 export default function StoryReaderScreen() {
+
+    const router = useRouter();
+    const {story} = useLocalSearchParams();
+    const [index, setIndex] = useState(0);
+    const [imageUrls , setImageUrls] = useState([]);
+    const [loading , setLoading] = useState(false);
+  
+
+
+
+    const lines: StoryLine[] =  useMemo(() => {
+        try {
+            const raw = Array.isArray(story) ? story[0] : story;
+            return JSON.parse(raw ?? "[]");
+        } catch {
+            return []
+        }
+    }, [story])
+
+    const current = lines[index];
+
+
   return (
     <ImageBackground
       source={require('../../assets/images/bg.jpg')}
@@ -29,8 +53,7 @@ export default function StoryReaderScreen() {
                 />
 
                 <Text style={styles.s4}>
-                    {" "}
-                    Lorem ipsum dolor sit amet, conse adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
+                    {current?.text ?? "No story available"}
                 </Text>
             </ScrollView>
         </View>

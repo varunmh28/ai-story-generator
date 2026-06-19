@@ -22,9 +22,11 @@ export default function HomeScreen() {
           body: JSON.stringify({seed})
         })
 
+        console.log("res: ",res)
         if(!res.ok) throw new Error('Failed to generate the story');
 
         const data = await res.json();
+        console.log("data lines: ", data.story);
 
         router.push({
           pathname: '/story',

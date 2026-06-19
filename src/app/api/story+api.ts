@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 type StoryLine ={text: string , prompt: string};
 export async function POST(request: Request) {
   const headers = {"Content-type" :" application/json"};
+  console.log("Hello this is API , do you copy");
 
   try {
     
