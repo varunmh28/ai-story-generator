@@ -12,6 +12,9 @@ export default function StoryReaderScreen() {
     const [index, setIndex] = useState(0);
     const [imageUrls , setImageUrls] = useState<string[]>([]);
     const [loading , setLoading] = useState(true);
+
+    const onPrev = () => setIndex((i) => Math.max(0, i - 1));
+    const onNext = () => setIndex((i) => Math.min(lines.length - 1, i + 1));
   
 
 
@@ -104,9 +107,9 @@ export default function StoryReaderScreen() {
             </ScrollView>
 
             <View style={styles.s5} >
-                <Button title='Previous'/>
-                <Text style={styles.s6}>1/9</Text>
-                <Button title='Next' />
+                <Button title='Previous' onPress={onPrev} disabled={index===0}/>
+                <Text style={styles.s6}> {lines.length ? index+1 : 0}/{lines.length} </Text>
+                <Button title='Next' onPress={onNext} disabled={index==lines.length-1} />
             </View>
         </View>
       </SafeAreaView>
