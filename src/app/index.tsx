@@ -1,13 +1,18 @@
-import { ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import "../global.css";
 
 export default function HomeScreen() {
+  const [seed, setSeed] = useState("");
+  const [loading , setLoading] = useState(false);
   return (
     // <View style={styles.container}>
-    
+   
       <ImageBackground
         source={require('../../assets/images/bg.jpg')}
         resizeMode="cover" // Controls how the image crops/stretches
+        
         style={styles.background}
        
       >
@@ -24,13 +29,23 @@ export default function HomeScreen() {
        <View style={styles.c6}>
         <View style={styles.c7}>
           <TextInput 
-          placeholder='Type your idea...'
-          // value={seed}
-          // onChangeText={setSeed}
+          placeholder="What story is waiting inside you?"
+          value={seed}
+          onChangeText={setSeed}
           // editable-{!loading}
-          style={styles.input}
+          // style={styles.input}
+          style={[styles.input, seed.length === 0 ? styles.italicPlaceholder : styles.normalInput]}
           />
         </View>
+        <TouchableOpacity 
+        disabled={loading}
+        onPress={() => router.push("/story")}
+        style={styles.c9}
+        >
+          <Text style={styles.c10}>
+            {loading ? "Generating...":"Generate Story"}
+            </Text>
+        </TouchableOpacity>
        </View>
 
 
@@ -83,11 +98,11 @@ const styles = StyleSheet.create({
      color:'#737373'
   },
   c6:{
-    rowGap:5,
-    flexDirection:'row'
+    rowGap:16,  //gap btwn input and generate
+    
   },
   c7:{
-    flex:1,
+ 
     backgroundColor:'white',
   //  borderCurve:'circular',
     borderWidth:2,
@@ -95,11 +110,36 @@ const styles = StyleSheet.create({
     padding:5,
     borderRadius:30,
     
+    
+    
   },
   input:{
-    paddingHorizontal:6,
-    fontSize:15
-  }
-
+    paddingHorizontal:18,
+    fontSize:15,
+    fontStyle:'italic'
+    
+    
+  },
+  c9:{
+    
+    backgroundColor:'#3350D6',
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:30,
+    padding:16,
+    
+  },
+  c10:{
+    color:'white',
+    fontStyle:'normal',
+    fontWeight:600
+  },
+  italicPlaceholder: {
+    fontStyle: 'italic',
+  },
+  // 🌟 Make sure this exact key name matches your component code
+  normalInput: {
+    fontStyle: 'normal',
+  },
   
 });
