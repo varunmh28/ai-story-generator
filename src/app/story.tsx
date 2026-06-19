@@ -1,7 +1,7 @@
 import Entypo from '@expo/vector-icons/Entypo';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Button, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 type StoryLine ={text: string , prompt: string};
 
@@ -10,7 +10,7 @@ export default function StoryReaderScreen() {
     const router = useRouter();
     const {story} = useLocalSearchParams();
     const [index, setIndex] = useState(0);
-    const [imageUrls , setImageUrls] = useState([]);
+    const [imageUrls , setImageUrls] = useState<string[]>([]);
     const [loading , setLoading] = useState(false);
   
 
@@ -26,6 +26,39 @@ export default function StoryReaderScreen() {
     }, [story])
 
     const current = lines[index];
+
+    useEffect(() => {
+       
+      if(!lines.length) return;  
+        
+      setLoading(true);
+      async function loadImages(){
+        try {
+            const results = await Promise.all(   // here promise.all returns an array of all image urls and by dynamically results is declared an array
+                lines.map(async (line) => {
+                    try{
+                        const res = await fetch("/api/image", {
+                            method:"POST",
+                            headers:{"Content-Type":"application/json"},
+                            body: JSON.stringify({prompt: line.prompt}),
+                        })
+                        if(!res.ok) return "";
+                        const data = await res.json();
+                        return data.imageUrl as string;
+                        
+                    } catch{
+                        return "";
+                    }
+                })
+            )
+
+            setImageUrls(results);
+        } catch (err) {
+            setLoading(false);
+        }
+      }
+      loadImages()
+    },[story])
 
 
   return (
@@ -46,16 +79,34 @@ export default function StoryReaderScreen() {
         </Pressable>
         <View style={styles.s2}>
             <ScrollView contentContainerStyle={styles.s3}>
-                <Image
-                source={require('../../assets/images/read.jpg')}
-                resizeMode="cover" 
-                style={styles.img}
-                />
+                {
+                  loading? (
+                    <View style={styles.s7} >
+                        <ActivityIndicator size="large" />
+                        <Text style={styles.s6}>Preparing Visuals...</Text>
+                    </View>
+                  ) : 
+                  
+                  imageUrls[index]?(       // if imageUrls have a value at current index
+                    <Image
+                    source={{uri: imageUrls[index]}}
+                    resizeMode="cover" 
+                    style={styles.img}
+                    />
+                  ): null
+                }
+               
 
                 <Text style={styles.s4}>
                     {current?.text ?? "No story available"}
                 </Text>
             </ScrollView>
+
+            <View style={styles.s5} >
+                <Button title='Previous'/>
+                <Text style={styles.s6}>1/9</Text>
+                <Button title='Next' />
+            </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -115,5 +166,22 @@ const styles = StyleSheet.create({
     fontStyle:'normal',
     fontWeight:500,
     padding:6
+  },
+  s5:{
+    flexDirection: 'row',     // flex-row
+    justifyContent: 'space-between', // justify-between
+    alignItems: 'center',     // items-center
+    marginTop: 24,
+  },
+  s6:{
+    fontSize: 16,             // text-base (1rem = 16px)
+    lineHeight: 24,           // Tailwind automatically pairs text-base with a 24px line height
+    color: '#374151',         // text-gray-700
+  },
+  s7:{
+    alignItems: 'center',        // items-center
+    justifyContent: 'center',    // justify-center
+    paddingVertical: 32,         // py-8 = 8 * 4px = 32px
+    gap: 8,                      // gap-2 = 2 * 4px = 8px
   }
 });
