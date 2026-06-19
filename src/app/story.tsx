@@ -11,7 +11,7 @@ export default function StoryReaderScreen() {
     const {story} = useLocalSearchParams();
     const [index, setIndex] = useState(0);
     const [imageUrls , setImageUrls] = useState<string[]>([]);
-    const [loading , setLoading] = useState(false);
+    const [loading , setLoading] = useState(true);
   
 
 
@@ -31,8 +31,9 @@ export default function StoryReaderScreen() {
        
       if(!lines.length) return;  
         
-      setLoading(true);
+     
       async function loadImages(){
+        
         try {
             const results = await Promise.all(   // here promise.all returns an array of all image urls and by dynamically results is declared an array
                 lines.map(async (line) => {
@@ -53,7 +54,7 @@ export default function StoryReaderScreen() {
             )
 
             setImageUrls(results);
-        } catch (err) {
+        } finally{
             setLoading(false);
         }
       }
