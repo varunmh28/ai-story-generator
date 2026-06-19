@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo/ui": "~56.0.18",
     "@expo/vector-icons": "^15.0.2",
+    "@google/genai": "^2.9.0",
     "babel-preset-expo": "^56.0.15",
     "expo": "~56.0.12",
     "expo-constants": "~56.0.18",
