@@ -1,98 +1,105 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import { ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native';
+import "../global.css";
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    // <View style={styles.container}>
+    
+      <ImageBackground
+        source={require('../../assets/images/bg.jpg')}
+        resizeMode="cover" // Controls how the image crops/stretches
+        style={styles.background}
+       
+      >
+        <View style={styles.c1}>
+          <View style={styles.c4}>
+            <View>
+            <Text style={styles.c3}>AI That Writes</Text>
+            <Text style={styles.c3}>for you</Text>
+          </View>
+          <Text style={styles.c5}>Stories made from your ideas</Text>
+         
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+       <View style={styles.c6}>
+        <View style={styles.c7}>
+          <TextInput 
+          placeholder='Type your idea...'
+          // value={seed}
+          // onChangeText={setSeed}
+          // editable-{!loading}
+          style={styles.input}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+        </View>
+       </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+
+
+        </View>
+       
+      </ImageBackground>
+    // </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1, // Ensures the outer view fills the screen
+  },
+  background: {
+    width: '100%',   // Full width
+    height: '100%',  // Full height
+    flex: 1,         // Allows children inside to use flexbox alignment
     justifyContent: 'center',
-    flexDirection: 'row',
+    // alignItems: 'center',
   },
-  safeArea: {
+  text: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  c1:{flex:1,
+     padding:6, 
+     justifyContent:'center',
+      rowGap:20,
+
+  },
+  c2:{
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    rowGap: 8,                  // gap-y-2 = 2 * 4px = 8px
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
+  c3: {
+    fontSize: 38,               // text-5xl is typically 48px
+    fontWeight: '600',          // font-semibold = 600
     textAlign: 'center',
+    
   },
-  code: {
-    textTransform: 'uppercase',
+  c4:{
+    rowGap:2
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  c5:{
+    fontSize:18,
+    textAlign:'center',
+     color:'#737373'
   },
+  c6:{
+    rowGap:5,
+    flexDirection:'row'
+  },
+  c7:{
+    flex:1,
+    backgroundColor:'white',
+  //  borderCurve:'circular',
+    borderWidth:2,
+    borderColor:'#F2F2F2',
+    padding:5,
+    borderRadius:30,
+    
+  },
+  input:{
+    paddingHorizontal:6,
+    fontSize:15
+  }
+
+  
 });
