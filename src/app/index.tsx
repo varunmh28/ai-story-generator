@@ -1,11 +1,49 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import "../global.css";
 
 export default function HomeScreen() {
   const [seed, setSeed] = useState("");
   const [loading , setLoading] = useState(false);
+
+
+  const onGenerate = async () => {
+      if(!seed.trim()){
+        Alert.alert("Please enter a sentence");
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const res = await fetch('/api/story', {
+          method: 'POST',
+          headers:{"Content-type": "application/json"},
+          body: JSON.stringify({seed})
+        })
+
+        if(!res.ok) throw new Error('Failed to generate the story');
+
+        const data = await res.json();
+
+        router.push({
+          pathname: '/story',
+          params: {story: JSON.stringify(data.story)}
+        })
+
+
+      } catch (e) {
+        Alert.alert("Error" , (e as Error).message);
+      }
+
+      finally{
+        setLoading(false);
+      }
+  }
+
+
+
+
   return (
     // <View style={styles.container}>
    
@@ -39,7 +77,7 @@ export default function HomeScreen() {
         </View>
         <TouchableOpacity 
         disabled={loading}
-        onPress={() => router.push("/story")}
+        onPress={onGenerate}
         style={styles.c9}
         >
           <Text style={styles.c10}>
